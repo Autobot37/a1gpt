@@ -93,12 +93,15 @@ __global__ void layerNormKernel8(float* output, float* gamma, float* beta, float
         output[k+i] = (x[i] - mean) / stddev * gamma[k+i] + beta[k+i];
     }
 }
-
 void layerNorm(float* output, int embedding_dim, float* gamma, float* beta, float* input) {
     size_t shared_siz = embedding_dim * 2 * sizeof(float) / 8;
-    layerNormKernel8<<<1, embedding_dim / 8, shared_siz>>>(output, gamma, beta, input);
-    if (cudaPeekAtLastError() != cudaSuccess) {
-        fprintf(stderr, "Error in layerNormKernel\n");
+    //layerNormKernel8<<<4, 4, 4>>>(output, gamma, beta, input);
+    cudaGetLastError();
+    cudaError_t cudaStatus = cudaPeekAtLastError();
+    if (cudaStatus != cudaSuccess) {
+        fprintf(stderr, "Error in layerNormKernel: %s\n", cudaGetErrorString(cudaStatus));
+        fprintf(stderr, "embedding_dim: %d\n", embedding_dim);
+        fprintf(stderr, "shared_siz: %zu\n", shared_siz);
         abort();
     }
 }
@@ -350,7 +353,8 @@ void attn2(int kv_idx, float *xbuf, float *qbuf, float *kvbuf, int emb_siz, int 
     float *tmpBuf;
     // tmpbuf is laid out like
     // head 0: <<block 0: l, m, v>, <block 1: l, m, v>, ...>>
-    if (cudaMalloc(&tmpBuf, nblocks * num_heads * (2 + head_siz) * sizeof(float)) != cudaSuccess) {
+    
+    if (cudaMallocManaged(&tmpBuf, nblocks * num_heads * (2 + head_siz) * sizeof(float)) != cudaSuccess) {
         fprintf(stderr, "Error allocating temporary buffer\n");
         abort();
     }
@@ -444,10 +448,12 @@ void gemv(float *y, float *A, float *x, float *b, int m, int k) {
 }
 
 void gemvSum(float *y, float *A, float *x, float *b, int m, int k) {
+    cudaGetLastError();
     size_t shared_siz = k * sizeof(float) / 4;
-    gemvSumKernel4<<<m, k / 4, shared_siz>>>(y, A, x, b);
+
+    //gemvSumKernel4<<<m, k / 4, shared_siz>>>(y, A, x, b);
     if (cudaPeekAtLastError() != cudaSuccess) {
-        fprintf(stderr, "Error in gemvKernel: %s\n", cudaGetErrorString(cudaGetLastError()));
+        fprintf(stderr, "Error in gemvSumKernel: %s\n", cudaGetErrorString(cudaGetLastError()));
         abort();
     }
 }
@@ -456,7 +462,7 @@ void gemvGelu(float *y, float *A, float *x, float *b, int m, int k) {
     size_t shared_siz = k * sizeof(float) / 4;
     gemvGeluKernel4<<<m, k/4, shared_siz>>>(y, A, x, b);
     if (cudaPeekAtLastError() != cudaSuccess) {
-        fprintf(stderr, "Error in gemvKernel: %s\n", cudaGetErrorString(cudaGetLastError()));
+        fprintf(stderr, "Error in gemvGeluKernel: %s\n", cudaGetErrorString(cudaGetLastError()));
         abort();
     }
 }

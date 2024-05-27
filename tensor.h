@@ -65,8 +65,8 @@ template <int N> struct Tensorf {
 
   void _alloc_device(size_t nfloats) {
 #ifdef CUDA
-    if (cudaMalloc(&gpu_alloc, nfloats * sizeof(float)) != cudaSuccess) {
-      fprintf(stderr, "cudaMalloc failed: %s\n", cudaGetErrorString(cudaGetLastError()));
+    if (cudaMallocManaged(&gpu_alloc, nfloats * sizeof(float)) != cudaSuccess) {
+      fprintf(stderr, "cudaMallocManaged failed: %s\n", cudaGetErrorString(cudaGetLastError()));
       abort();
     }
     gpu_data = gpu_alloc;
