@@ -350,7 +350,7 @@ void attn2(int kv_idx, float *xbuf, float *qbuf, float *kvbuf, int emb_siz, int 
     float *tmpBuf;
     // tmpbuf is laid out like
     // head 0: <<block 0: l, m, v>, <block 1: l, m, v>, ...>>
-    if (cudaMalloc(&tmpBuf, nblocks * num_heads * (2 + head_siz) * sizeof(float)) != cudaSuccess) {
+    if (cudaMallocManaged(&tmpBuf, nblocks * num_heads * (2 + head_siz) * sizeof(float)) != cudaSuccess) {
         fprintf(stderr, "Error allocating temporary buffer\n");
         abort();
     }

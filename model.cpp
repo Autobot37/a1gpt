@@ -13,8 +13,8 @@ Model::~Model() {
 
 void CausalSelfAttention::apply(const Tensorf<1> &out, const Tensorf<1> &xbuf,
                                 int i, const Tensorf<2> &kvbuf) {
-  const int emb_siz = 768;
-  const int num_heads = 12;
+  const int emb_siz = 1600;
+  const int num_heads = 25;
 
   // algebraic aggregators from the flash attention paper
   // https://arxiv.org/pdf/2205.14135.pdf section 3.1
@@ -144,8 +144,8 @@ void LayerNorm::apply(Tensorf<1> &out, const Tensorf<1> &in) {
 }
 
 void MLPBlock::apply(const Tensorf<1> &out, const Tensorf<1> &in) {
-  int hidden_dim = 4*768; 
-  int emb_dim = 768;
+  int hidden_dim = 4*1600; 
+  int emb_dim = 1600;
 
   assert(in.shape[0] == emb_dim);
   assert(c_fc_bias.shape[0] == hidden_dim);

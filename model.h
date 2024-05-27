@@ -87,7 +87,7 @@ struct Model {
     wpe_weight.copyToDevice();
     ln_f.bias.copyToDevice();
     ln_f.weight.copyToDevice();
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 48; i++) {
       h[i].attn.c_attn_bias.copyToDevice();
       h[i].attn.c_attn_weight.copyToDevice();
       h[i].attn.c_proj_bias.copyToDevice();
