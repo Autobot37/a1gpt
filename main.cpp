@@ -39,10 +39,10 @@ void usage() {
 
 int generate(const char *prompt, int ntokens_gen, Model &m, BPEDecoder &decoder, BPEEncoder &encoder, unsigned int seed) {
   srand(seed);
-  Tensorf<3> kvbuf(12, ctx_max, 2*m.embedding_dim);
+  Tensorf<3> kvbuf(48, ctx_max, 2*m.embedding_dim);
   Tensorf<1> ybuf(m.embedding_dim);
 
-  Tensorf<3> cfg_kvbuf(12, ctx_max, 2*m.embedding_dim);
+  Tensorf<3> cfg_kvbuf(48, ctx_max, 2*m.embedding_dim);
   Tensorf<1> cfg_ybuf(m.embedding_dim);
   int cfg_ptr;
 
@@ -140,7 +140,7 @@ int evaluate(Model &m, BPEDecoder &decoder, BPEEncoder &encoder, const char *fil
     exit(1);
   }
 
-  Tensorf<3> kvbuf(12, ctx_max, 2*m.embedding_dim);
+  Tensorf<3> kvbuf(48, ctx_max, 2*m.embedding_dim);
   Tensorf<1> ybuf(m.embedding_dim);
   Tensorf<1> logitbuf(m.ntokens);
   int tokenbuf[1024];

@@ -61,7 +61,7 @@ void Model::apply_transformer(int token_id, int input_pos,
                               const Tensorf<1> &emb_out) {
   loadEmbedding(emb_out.gpu_data, token_id, input_pos, embedding_dim,
                 wte_weight.gpu_data, wpe_weight.gpu_data);
-  for (int layer = 0; layer < 12; layer++) {
+  for (int layer = 0; layer < 48; layer++) {
     h[layer].apply(emb_out, input_pos, kvbuf.slice(layer));
   }
 }
