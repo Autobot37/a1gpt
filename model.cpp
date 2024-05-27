@@ -206,7 +206,7 @@ void Model::apply_transformer(int token_id, int input_pos,
   for (int k = 0; k < embedding_dim; k++) {
     emb_out[k] = wte_weight(token_id, k) + wpe_weight(input_pos, k);
   }
-  for (int layer = 0; layer < 12; layer++) {
+  for (int layer = 0; layer < 48; layer++) {
     h[layer].apply(emb_out, input_pos, kvbuf.slice(layer));
   }
 }
