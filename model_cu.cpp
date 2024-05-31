@@ -24,11 +24,11 @@ void CausalSelfAttention::apply(const Tensorf<1> &out, const Tensorf<1> &xbuf,
   Tensorf<1> qbuf(emb_siz);
 
   // qbuf, kvbuf[i] = qkv(QKV, xbuf)
-  qkv(i, xbuf.gpu_data, qbuf.gpu_data, kvbuf.gpu_data, c_attn_weight.gpu_data, c_attn_bias.gpu_data, emb_siz);
+  // qkv(i, xbuf.gpu_data, qbuf.gpu_data, kvbuf.gpu_data, c_attn_weight.gpu_data, c_attn_bias.gpu_data, emb_siz);
   // y = attn(qbuf, kvbuf[i])
-  attn2(i, ybuf.gpu_data, qbuf.gpu_data, kvbuf.gpu_data, emb_siz, num_heads);
+  attn(i, ybuf.gpu_data, qbuf.gpu_data, kvbuf.gpu_data, emb_siz, num_heads);
   // x += proj(y)
-  gemvSum(out.gpu_data, c_proj_weight.gpu_data,
+  gemv(out.gpu_data, c_proj_weight.gpu_data,
           ybuf.gpu_data, c_proj_bias.gpu_data, emb_siz,
           emb_siz);
 }
@@ -52,7 +52,7 @@ void MLPBlock::apply(const Tensorf<1> &out, const Tensorf<1> &in) {
            emb_dim * 4, emb_dim);
 
   // x += mlp.proj(h)
-  gemvSum(out.gpu_data, c_proj_weight.gpu_data, hbuf.gpu_data,
+  gemv(out.gpu_data, c_proj_weight.gpu_data, hbuf.gpu_data,
           c_proj_bias.gpu_data, emb_dim, emb_dim * 4);
 }
 

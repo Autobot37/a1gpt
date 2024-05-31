@@ -3,6 +3,8 @@
 
 #include "blas.h"
 #include "model.h"
+#include <iostream>
+using namespace std;
 
 Model::~Model() {
   delete[] h;
@@ -13,6 +15,10 @@ Model::~Model() {
 
 void CausalSelfAttention::apply(const Tensorf<1> &out, const Tensorf<1> &xbuf,
                                 int i, const Tensorf<2> &kvbuf) {
+  cout << "[Attention]" << endl;
+  cout << "out.shape" <<  out.shape[0] << endl;
+  cout << "xbuf.shape" <<  xbuf.shape[0] << endl;
+  cout << "kvbuf.shape" <<  kvbuf.shape[0] << kvbuf.shape[1] << endl;
   const int emb_siz = 1600;
   const int num_heads = 25;
 
@@ -119,6 +125,10 @@ void CausalSelfAttention::apply(const Tensorf<1> &out, const Tensorf<1> &xbuf,
 }
 
 void LayerNorm::apply(Tensorf<1> &out, const Tensorf<1> &in) {
+  cout << "[LayerNorm]" << endl;
+  cout << "out.shape" <<  out.shape[0] << endl;
+  cout << "in.shape" <<  in.shape[0] << endl;
+
   float sum1 = 0;
   float sum2 = 0;
   float *i = in.data;
@@ -144,6 +154,10 @@ void LayerNorm::apply(Tensorf<1> &out, const Tensorf<1> &in) {
 }
 
 void MLPBlock::apply(const Tensorf<1> &out, const Tensorf<1> &in) {
+  cout << "[MLPBlock]" << endl;
+  cout << "out.shape" <<  out.shape[0] << endl;
+  cout << "in.shape" <<  in.shape[0] << endl;
+
   int hidden_dim = 4*1600; 
   int emb_dim = 1600;
 
@@ -183,6 +197,10 @@ void MLPBlock::apply(const Tensorf<1> &out, const Tensorf<1> &in) {
 void Model::apply_lm_head(Tensorf<1> &emb_in, Tensorf<1> &logits) {
   assert(emb_in.shape[0] == embedding_dim);
   // layernorm and dot with embedding matrix
+  cout << "[lm head]" << endl;
+  cout << "emb_in.shape" <<  emb_in.shape[0] << endl;
+  cout << "logits.shape" <<  logits.shape[0] << endl;
+  
   ln_f.apply(emb_in, emb_in);
   const int ntokens = logits.shape[0];
   float *w = wte_weight.data;
