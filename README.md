@@ -9,6 +9,8 @@ $ cmake ..
 $ make -j
 $ ./gpt2 -h
 ```
+
+```
 $ ./gpt2 -s 1688452945 -n 256
 a1gpt seed=1688452945 sampling_temperature=0.90 ntokens=301
 ```
